@@ -72,11 +72,27 @@ const TransactionSchema = new mongoose.Schema({
 const Transaction = mongoose.model("Transaction", TransactionSchema);
 
 // Routes
-app.post("/transactions", async (req, res) => {
+app.put("/transactions", async (req, res) => {
   try {
-    const transaction = new Transaction(req.body);
-    await transaction.save();
-    res.status(201).send(transaction);
+    const { _id, date, category, description, quantity, type } = req.body;
+
+    // Проверка наличия ID
+    if (!_id) {
+      return res.status(400).send({ error: "Transaction ID is required" });
+    }
+
+    // Обновление документа
+    const updatedTransaction = await Transaction.findByIdAndUpdate(
+      _id,
+      { date, category, description, quantity, type },
+      { new: true } // Вернуть обновленный документ
+    );
+
+    if (!updatedTransaction) {
+      return res.status(404).send({ error: "Transaction not found" });
+    }
+
+    res.status(200).send(updatedTransaction);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
@@ -86,6 +102,26 @@ app.get("/transactions", async (req, res) => {
   try {
     const transactions = await Transaction.find();
     res.send(transactions);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+app.delete("/transactions", async (req, res) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).send({ error: "Transaction ID is required" });
+    }
+
+    const deletedTransaction = await Transaction.findByIdAndDelete(id);
+
+    if (!deletedTransaction) {
+      return res.status(404).send({ error: "Transaction not found" });
+    }
+
+    res.status(200).send({ message: "Transaction deleted successfully" });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
