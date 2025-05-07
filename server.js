@@ -1,9 +1,19 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Настройка CORS
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Укажи адрес фронтенда
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Разрешённые методы
+    credentials: true, // Если нужно отправлять cookie
+  })
+);
 
 // Middleware
 app.use(express.json());
