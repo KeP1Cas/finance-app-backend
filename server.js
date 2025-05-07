@@ -17,6 +17,39 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+const UserSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+const User = mongoose.model("User", UserSchema);
+
+// Регистрация
+app.post("/registration", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = new User({ username, password }); // В реальном приложении хэши паролей
+    await user.save();
+    res.status(201).send({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+// Логин
+app.post("/login", async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username, password });
+    if (!user) {
+      return res.status(401).send({ error: "Invalid credentials" });
+    }
+    res.status(200).send({ token: "mock-token", message: "Login successful" }); // Здесь можно сгенерировать JWT
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 // Models
 const TransactionSchema = new mongoose.Schema({
   _userId: String,
