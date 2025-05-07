@@ -72,6 +72,25 @@ const TransactionSchema = new mongoose.Schema({
 const Transaction = mongoose.model("Transaction", TransactionSchema);
 
 // Routes
+app.post("/transactions", async (req, res) => {
+  try {
+    const transaction = new Transaction(req.body);
+    await transaction.save();
+    res.status(201).send(transaction);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+app.get("/transactions", async (req, res) => {
+  try {
+    const transactions = await Transaction.find();
+    res.send(transactions);
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 app.put("/transactions", async (req, res) => {
   try {
     const { _id, date, category, description, quantity, type } = req.body;
@@ -93,15 +112,6 @@ app.put("/transactions", async (req, res) => {
     }
 
     res.status(200).send(updatedTransaction);
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-});
-
-app.get("/transactions", async (req, res) => {
-  try {
-    const transactions = await Transaction.find();
-    res.send(transactions);
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
