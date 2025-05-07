@@ -9,8 +9,9 @@ const PORT = process.env.PORT || 5000;
 // Настройка CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Укажи адрес фронтенда
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], // Разрешённые методы
+    origin: "https://kep1cas.github.io",
+    // origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // Если нужно отправлять cookie
   })
 );
