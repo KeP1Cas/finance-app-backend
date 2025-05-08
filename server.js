@@ -6,18 +6,11 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = ["https://kep1cas.github.io", "http://localhost:3000"];
-
 // Настройка CORS
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "https://kep1cas.github.io",
+    // origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true, // Если нужно отправлять cookie
   })
